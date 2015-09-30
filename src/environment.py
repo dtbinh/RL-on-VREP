@@ -4,6 +4,8 @@ Created on Mon Sep 21 14:44:43 2015
 
 @author: Netbook
 """
+import vrep
+from robot import Robot
 
 class SimpleEnvironment:
     def __init__(self):
@@ -42,3 +44,35 @@ class SimpleEnvironment:
         
     def reset(self):
         self.state = self.initState
+
+class MapStraight:
+    def __init__(self):
+        vrep.simxFinish(-1)
+        clientID=vrep.simxStart('127.0.0.1',19999,True,True,5000,5)
+        if clientID==-1:
+            raise Exception('Could not connect to API server')
+            
+        returnCode=vrep.simxSynchronous(clientID,True)   
+        
+        errorCodeCar,car = vrep.simxGetObjectHandle(clientID,'nakedAckermannSteeringCar',vrep.simx_opmode_oneshot_wait)
+        
+        if (errorCodeCar!=0):
+                raise Exception('Could not get car handle')
+        
+        returnCode,position=vrep.simxGetObjectPosition(clientID,car,-1,vrep.simx_opmode_oneshot_wait)
+        returnCode,orientation=vrep.simxGetObjectOrientation(clientID,car,-1,vrep.simx_opmode_oneshot_wait)
+        
+        if (returnCode!=0):
+                raise Exception('Could not get car position')
+        
+        self.initState = [position[0],position[1],orientation[1],0,0]
+        
+        self.redPenalty = -5
+        self.boundaries = [[-3, 7],[-7, 7]]
+        
+        self.state = self.initState
+        self.robot = Robot(clientID)
+
+            
+            
+        
