@@ -86,7 +86,16 @@ class MapStraight:
         self.robot = Robot(clientID)
         
         self.target = [targetPosition[0],targetPosition[1]]
-            
+        
+    def start(self):
+        returnCode = vrep.simxStartSimulation(self.clientID,vrep.simx_opmode_oneshot)
+        if (returnCode!=0):
+                raise Exception('Could not start')
+                
+    def stop(self):
+        returnCode = vrep.simxStopSimulation(self.clientID,vrep.simx_opmode_oneshot)
+        if (returnCode!=0):
+                raise Exception('Could not stop')
         
     def calculateReward(self):
         if self.state[0]>self.redBoundaries[0] and self.state[0]<self.redBoundaries[1]:
