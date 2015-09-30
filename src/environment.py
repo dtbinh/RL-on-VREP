@@ -122,7 +122,6 @@ class MapStraight:
         returnCode=vrep.simxSynchronous(self.clientID,True)
         self.robot.applyAction(action)
         returncode = vrep.simxSynchronousTrigger(self.clientID)
-        print "returncode: ", returncode
         newState = self.getState()
         self.state = newState
         return tuple(newState),reward
