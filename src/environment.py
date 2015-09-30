@@ -73,6 +73,8 @@ class MapStraight:
         if (returnCode!=0):
                 raise Exception('Could not get target position')
         
+        self.clientID = clientID
+        
         self.initState = [position[0],position[1],orientation[1],0,0]
         
         self.redPenalty = -5
@@ -92,5 +94,7 @@ class MapStraight:
         else:
             penalty=-5
         
-        return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+penalty 
+        return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+penalty
+
+        
         
