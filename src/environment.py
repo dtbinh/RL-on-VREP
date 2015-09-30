@@ -52,7 +52,7 @@ class MapStraight:
         if clientID==-1:
             raise Exception('Could not connect to API server')
             
-        returnCode=vrep.simxSynchronous(clientID,True)   
+        #returnCode=vrep.simxSynchronous(clientID,True)   
         
         errorCodeCar,car = vrep.simxGetObjectHandle(clientID,'nakedAckermannSteeringCar',vrep.simx_opmode_oneshot_wait)
         
@@ -98,6 +98,11 @@ class MapStraight:
         returnCode = vrep.simxStopSimulation(self.clientID,vrep.simx_opmode_oneshot)
         if (returnCode!=0):
                 raise Exception('Could not stop')
+                
+    def getState(self):
+        returnCode,position=vrep.simxGetObjectPosition(self.clientID,self.car,-1,vrep.simx_opmode_oneshot_wait)
+        returnCode,orientation=vrep.simxGetObjectOrientation(self.clientID,self.car,-1,vrep.simx_opmode_oneshot_wait)
+        return [position[0],position[1],orientation[1],self.robot.desiredWheelRotSpeed,self.robot.desiredSteeringAngle]
                 
     def calculateReward(self):
         if self.state[0]>self.redBoundaries[0] and self.state[0]<self.redBoundaries[1]:
