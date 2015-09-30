@@ -15,7 +15,7 @@ class Robot:
         self.desiredWheelRotSpeed=0
         
         self.steeringAngleDx=2*math.pi/180
-        self.wheelRotSpeedDx=-1
+        self.wheelRotSpeedDx=1
         
         self.d=0.755
         self.l=2.5772
