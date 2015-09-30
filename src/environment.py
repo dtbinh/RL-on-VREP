@@ -85,5 +85,12 @@ class MapStraight:
         
         self.target = [targetPosition[0],targetPosition[1]]
             
-            
+        
+    def calculateReward(self):
+        if self.state[0]>self.redBoundaries[0] and self.state[0]<self.redBoundaries[1]:
+            penalty=0
+        else:
+            penalty=-5
+        
+        return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+penalty 
         
