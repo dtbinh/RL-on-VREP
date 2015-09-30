@@ -52,7 +52,6 @@ class MapStraight:
         if clientID==-1:
             raise Exception('Could not connect to API server')
             
-        #returnCode=vrep.simxSynchronous(clientID,True)   
         
         errorCodeCar,car = vrep.simxGetObjectHandle(clientID,'nakedAckermannSteeringCar',vrep.simx_opmode_oneshot_wait)
         
@@ -91,13 +90,18 @@ class MapStraight:
         
     def start(self):
         returnCode = vrep.simxStartSimulation(self.clientID,vrep.simx_opmode_oneshot)
+        if (returnCode>1):
+            print "returnCode: ", returnCode
+            raise Exception('Could not start')
+        returnCode=vrep.simxSynchronous(self.clientID,True)
         if (returnCode!=0):
-                raise Exception('Could not start')
+            raise Exception('Could not set synchronous mode')
                 
     def stop(self):
         returnCode = vrep.simxStopSimulation(self.clientID,vrep.simx_opmode_oneshot)
-        if (returnCode!=0):
-                raise Exception('Could not stop')
+        if (returnCode>1):
+            print "returnCode: ", returnCode
+            raise Exception('Could not stop')
                 
     def getState(self):
         returnCode,position=vrep.simxGetObjectPosition(self.clientID,self.car,-1,vrep.simx_opmode_oneshot_wait)
@@ -112,6 +116,17 @@ class MapStraight:
         
         return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+penalty
 
+
+    def applyAction(self, action):
+        reward = self.calculateReward()
+        returnCode=vrep.simxSynchronous(self.clientID,True)
+        self.robot.applyAction(action)
+        returncode = vrep.simxSynchronousTrigger(self.clientID)
+        print "returncode: ", returncode
+        newState = self.getState()
+        self.state = newState
+        return tuple(newState),reward
+        
         
         
                 
