@@ -62,17 +62,28 @@ class MapStraight:
         returnCode,position=vrep.simxGetObjectPosition(clientID,car,-1,vrep.simx_opmode_oneshot_wait)
         returnCode,orientation=vrep.simxGetObjectOrientation(clientID,car,-1,vrep.simx_opmode_oneshot_wait)
         
+        
+        errorCodeTarget,target = vrep.simxGetObjectHandle(clientID,'Target',vrep.simx_opmode_oneshot_wait)
+        
+        if (errorCodeTarget!=0):
+                raise Exception('Could not get target handle')
+        
+        returnCode,targetPosition=vrep.simxGetObjectPosition(clientID,target,-1,vrep.simx_opmode_oneshot_wait)        
+        
         if (returnCode!=0):
-                raise Exception('Could not get car position')
+                raise Exception('Could not get target position')
         
         self.initState = [position[0],position[1],orientation[1],0,0]
         
         self.redPenalty = -5
         self.boundaries = [[-3, 7],[-7, 7]]
         
+        self.redBoundaries=[1.5,2.5]
+        
         self.state = self.initState
         self.robot = Robot(clientID)
-
+        
+        self.target = [targetPosition[0],targetPosition[1]]
             
             
         
