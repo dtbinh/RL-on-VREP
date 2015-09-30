@@ -72,6 +72,8 @@ class MapStraight:
         
         if (returnCode!=0):
                 raise Exception('Could not get target position')
+                
+        self.car = car
         
         self.clientID = clientID
         
@@ -96,7 +98,7 @@ class MapStraight:
         returnCode = vrep.simxStopSimulation(self.clientID,vrep.simx_opmode_oneshot)
         if (returnCode!=0):
                 raise Exception('Could not stop')
-        
+                
     def calculateReward(self):
         if self.state[0]>self.redBoundaries[0] and self.state[0]<self.redBoundaries[1]:
             penalty=0
@@ -105,5 +107,9 @@ class MapStraight:
         
         return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+penalty
 
+        
+        
+                
+        
         
         
