@@ -86,17 +86,18 @@ class MapStraight:
         
         self.clientID = clientID
         
-        self.initState = [position[0],position[1],theta,0,0]
-        
         self.redPenalty = -5
         self.boundaries = [[-3, 7],[-7, 7]]
         
         self.redBoundaries=[1.5,2.5]
         
-        self.state = self.initState
         self.robot = Robot(clientID)
         
         self.target = [targetPosition[0],targetPosition[1]]
+        
+        self.initState = [position[0],position[1],theta,1*(self.redBoundaries[0]>position[0] or position[0]>self.redBoundaries[1]),0,0]
+        
+        self.state = self.initState
         
     def start(self):
         returnCode = vrep.simxStartSimulation(self.clientID,vrep.simx_opmode_oneshot)
@@ -124,15 +125,10 @@ class MapStraight:
         returnCode,positionBR=vrep.simxGetObjectPosition(self.clientID,self.br,-1,vrep.simx_opmode_oneshot_wait)
         
         theta=math.atan2(positionFR[1]-positionBR[1],positionFR[0]-positionBR[0])
-        return [position[0],position[1],theta,self.robot.desiredWheelRotSpeed,self.robot.desiredSteeringAngle]
+        return [position[0],position[1],theta,1*(self.redBoundaries[0]>position[0] or position[0]>self.redBoundaries[1]),self.robot.desiredWheelRotSpeed,self.robot.desiredSteeringAngle]
                 
     def calculateReward(self):
-        if self.state[0]>self.redBoundaries[0] and self.state[0]<self.redBoundaries[1]:
-            penalty=0
-        else:
-            penalty=-5
-        
-        return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+penalty
+        return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+(-5)*self.state[3]
 
 
     def applyAction(self, action):
