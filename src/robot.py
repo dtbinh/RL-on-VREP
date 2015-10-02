@@ -31,20 +31,21 @@ class Robot:
         self.mr = mr
         self.sl = sl
         self.sr = sr
-    
-    def applyAction(self,action):
-        self.desiredWheelRotSpeed=self.desiredWheelRotSpeed+action[0]*self.wheelRotSpeedDx
-        self.desiredSteeringAngle=self.desiredSteeringAngle+action[1]*self.steeringAngleDx
-        
-        steeringAngleLeft=math.atan(self.l/(-self.d+self.l/math.tan(self.desiredSteeringAngle+0.00001)))
-        steeringAngleRight=math.atan(self.l/(self.d+self.l/math.tan(self.desiredSteeringAngle+0.00001)))
-        
-        returnCode=vrep.simxSetJointTargetPosition(self.clientID,self.sl,steeringAngleLeft,vrep.simx_opmode_oneshot_wait)
-        returnCode=vrep.simxSetJointTargetPosition(self.clientID,self.sr,steeringAngleRight,vrep.simx_opmode_oneshot_wait)
 
-        returnCode=vrep.simxSetJointTargetVelocity(self.clientID,self.ml,self.desiredWheelRotSpeed,vrep.simx_opmode_oneshot_wait)
-        returnCode=vrep.simxSetJointTargetVelocity(self.clientID,self.mr,self.desiredWheelRotSpeed,vrep.simx_opmode_oneshot_wait)
-        
+    def applyAction(self,action):
+        if action[0]!=0:
+            self.desiredWheelRotSpeed=self.desiredWheelRotSpeed+action[0]*self.wheelRotSpeedDx
+                
+            returnCode=vrep.simxSetJointTargetVelocity(self.clientID,self.ml,self.desiredWheelRotSpeed,vrep.simx_opmode_oneshot)
+            returnCode=vrep.simxSetJointTargetVelocity(self.clientID,self.mr,self.desiredWheelRotSpeed,vrep.simx_opmode_oneshot)
+            
+        if action[1]!=0:
+            self.desiredSteeringAngle=self.desiredSteeringAngle+action[1]*self.steeringAngleDx
+            steeringAngleLeft=math.atan(self.l/(-self.d+self.l/math.tan(self.desiredSteeringAngle+0.00001)))
+            steeringAngleRight=math.atan(self.l/(self.d+self.l/math.tan(self.desiredSteeringAngle+0.00001)))
+               
+            returnCode=vrep.simxSetJointTargetPosition(self.clientID,self.sl,steeringAngleLeft,vrep.simx_opmode_oneshot)
+            returnCode=vrep.simxSetJointTargetPosition(self.clientID,self.sr,steeringAngleRight,vrep.simx_opmode_oneshot)
 
 """vrep.simxFinish(-1)
 clientID=vrep.simxStart('127.0.0.1',19999,True,True,5000,5)
