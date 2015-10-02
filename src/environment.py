@@ -5,6 +5,7 @@ Created on Mon Sep 21 14:44:43 2015
 @author: Netbook
 """
 import vrep
+import math
 from robot import Robot
 
 class SimpleEnvironment:
@@ -55,12 +56,18 @@ class MapStraight:
         
         errorCodeCar,car = vrep.simxGetObjectHandle(clientID,'nakedAckermannSteeringCar',vrep.simx_opmode_oneshot_wait)
         
+        errorCodeFrontRight,fr = vrep.simxGetObjectHandle(clientID,'Cylinder7',vrep.simx_opmode_oneshot_wait)
+        errorCodeBackRight,br = vrep.simxGetObjectHandle(clientID,'Cylinder3',vrep.simx_opmode_oneshot_wait)
+        
         if (errorCodeCar!=0):
                 raise Exception('Could not get car handle')
         
         returnCode,position=vrep.simxGetObjectPosition(clientID,car,-1,vrep.simx_opmode_oneshot_wait)
-        returnCode,orientation=vrep.simxGetObjectOrientation(clientID,car,-1,vrep.simx_opmode_oneshot_wait)
         
+        returnCode,positionFR=vrep.simxGetObjectPosition(clientID,fr,-1,vrep.simx_opmode_oneshot_wait)
+        returnCode,positionBR=vrep.simxGetObjectPosition(clientID,br,-1,vrep.simx_opmode_oneshot_wait)
+        
+        theta=math.atan2(positionFR[1]-positionBR[1],positionFR[0]-positionBR[0])
         
         errorCodeTarget,target = vrep.simxGetObjectHandle(clientID,'Target',vrep.simx_opmode_oneshot_wait)
         
@@ -74,9 +81,12 @@ class MapStraight:
                 
         self.car = car
         
+        self.fr = fr
+        self.br = br
+        
         self.clientID = clientID
         
-        self.initState = [position[0],position[1],orientation[1],0,0]
+        self.initState = [position[0],position[1],theta,0,0]
         
         self.redPenalty = -5
         self.boundaries = [[-3, 7],[-7, 7]]
@@ -110,8 +120,11 @@ class MapStraight:
                 
     def getState(self):
         returnCode,position=vrep.simxGetObjectPosition(self.clientID,self.car,-1,vrep.simx_opmode_oneshot_wait)
-        returnCode,orientation=vrep.simxGetObjectOrientation(self.clientID,self.car,-1,vrep.simx_opmode_oneshot_wait)
-        return [position[0],position[1],orientation[1],self.robot.desiredWheelRotSpeed,self.robot.desiredSteeringAngle]
+        returnCode,positionFR=vrep.simxGetObjectPosition(self.clientID,self.fr,-1,vrep.simx_opmode_oneshot_wait)
+        returnCode,positionBR=vrep.simxGetObjectPosition(self.clientID,self.br,-1,vrep.simx_opmode_oneshot_wait)
+        
+        theta=math.atan2(positionFR[1]-positionBR[1],positionFR[0]-positionBR[0])
+        return [position[0],position[1],theta,self.robot.desiredWheelRotSpeed,self.robot.desiredSteeringAngle]
                 
     def calculateReward(self):
         if self.state[0]>self.redBoundaries[0] and self.state[0]<self.redBoundaries[1]:
