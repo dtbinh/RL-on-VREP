@@ -103,6 +103,7 @@ class MapStraight:
                 
     def stop(self):
         returnCode = vrep.simxStopSimulation(self.clientID,vrep.simx_opmode_oneshot)
+        self.robot.reset()
         if (returnCode>1):
             print "returnCode: ", returnCode
             raise Exception('Could not stop')
