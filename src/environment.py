@@ -94,6 +94,10 @@ class MapStraight:
             print "returnCode: ", returnCode
             raise Exception('Could not start')
         returnCode=vrep.simxSynchronous(self.clientID,True)
+        
+        for k in range(10): #Run to steps to step through initial "drop"
+            returncode = vrep.simxSynchronousTrigger(self.clientID)
+            
         if (returnCode!=0):
             raise Exception('Could not set synchronous mode')
                 
