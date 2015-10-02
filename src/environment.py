@@ -48,7 +48,7 @@ class SimpleEnvironment:
 class MapStraight:
     def __init__(self):
         vrep.simxFinish(-1)
-        clientID=vrep.simxStart('127.0.0.1',19999,True,True,5000,5)
+        clientID=vrep.simxStart('127.0.0.1',19999,True,True,5000,2)
         if clientID==-1:
             raise Exception('Could not connect to API server')
             
@@ -119,7 +119,6 @@ class MapStraight:
 
     def applyAction(self, action):
         reward = self.calculateReward()
-        returnCode=vrep.simxSynchronous(self.clientID,True)
         self.robot.applyAction(action)
         returncode = vrep.simxSynchronousTrigger(self.clientID)
         newState = self.getState()
