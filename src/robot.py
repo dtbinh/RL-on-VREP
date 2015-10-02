@@ -31,6 +31,10 @@ class Robot:
         self.mr = mr
         self.sl = sl
         self.sr = sr
+    
+    def reset(self):
+        self.desiredSteeringAngle=0
+        self.desiredWheelRotSpeed=0        
 
     def applyAction(self,action):
         if action[0]!=0:
