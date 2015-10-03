@@ -5,7 +5,7 @@ Created on Mon Sep 21 13:53:49 2015
 @author: Netbook
 """
 
-from tools import ZeroDict
+from tools import ZeroDict,LinearApproximator
 import random
 
 class QLearningAgent:
@@ -51,7 +51,31 @@ class QLearningAgent:
         newState,reward=env.applyAction(action)
         self.update(state,action,newState,reward)
         
+
+class ApproximateQLearningAgent:
+    
+    def __init__(self,eps,alpha,discount,targetPos):
+        self.actions=((-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1))
+        self.QValues = LinearApproximator(self.actions,targetPos)
+        self.eps=eps
+        self.alpha=alpha
+        self.discount=discount
         
+    def getBestActionMaxQValue(self,state):
+        bestAction,maxQValue = self.QValues.getBestActionMaxQValue(state)
+        return (bestAction,maxQValue)
+        
+        
+    def selectAction(self,state):  
+        r=random.uniform(0,1)
+        if r<self.eps:
+            return self.actions[random.randint(0,len(self.actions)-1)]
+        else:
+            bestAction = self.getBestActionMaxQValue(state)[0]
+            return bestAction
+    
+    def update(self, state, action, newState, reward):
+        self.QValues.updateWeights(state, action, newState, reward, self.discount, self.alpha)    
         
         
             
