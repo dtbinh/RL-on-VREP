@@ -128,7 +128,14 @@ class MapStraight:
         return [position[0],position[1],theta,1*(self.redBoundaries[0]>position[0] or position[0]>self.redBoundaries[1]),self.robot.desiredWheelRotSpeed,self.robot.desiredSteeringAngle]
                 
     def calculateReward(self):
-        return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+(-5)*self.state[3]
+        if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[01]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1]:
+            return -50
+        
+        elif abs(self.target[0]-self.state[0])+abs(self.target[1]-self.state[1])<0.1:
+            return 50
+            
+        else:
+            return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+(-5)*self.state[3]
 
 
     def applyAction(self, action):
