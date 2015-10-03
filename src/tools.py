@@ -16,6 +16,11 @@ class LinearApproximator:
             self.weights[action] = np.zeros(3)
         
         self.targetPos = targetPos
+        
+    def __getitem__(self,stateActionPair):
+        state = stateActionPair[0]
+        action = stateActionPair[1]
+        return self.calculateQValue(state,action)
     
     def f(self, state):
         
