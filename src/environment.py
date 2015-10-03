@@ -8,6 +8,8 @@ import vrep
 import math
 from robot import Robot
 
+import time
+
 class SimpleEnvironment:
     def __init__(self):
         self.rewards=[[10]+4*[-1],5*[-1],5*[-1]]
@@ -140,6 +142,13 @@ class MapStraight:
 
     def applyAction(self, action):
         reward = self.calculateReward()
+        if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[01]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1] or (abs(self.target[0]-self.state[0])+abs(self.target[1]-self.state[1]))<0.1:
+            self.state = self.initState
+            self.stop()
+            time.sleep(0.1) #100ms delay between stopping and starting to avoid problems
+            self.start()
+            print "Terminal state!!"
+            return None,reward
         self.robot.applyAction(action)
         returncode = vrep.simxSynchronousTrigger(self.clientID)
         newState = self.getState()
