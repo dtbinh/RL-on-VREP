@@ -45,7 +45,10 @@ class LinearApproximator:
         return bestAction, maxQValue
     
     def updateWeights(self, state, action, newState, reward, discount, alpha):
-        _,maxNextQValue = self.getBestActionMaxQValue(newState)
+        if newState==None:
+            maxNextQValue = 0
+        else:
+            _,maxNextQValue = self.getBestActionMaxQValue(newState)
         difference = (reward+discount*maxNextQValue)-self.calculateQValue(state,action)
         self.weights[action] = self.weights[action] - alpha*difference*self.f(state)
 
