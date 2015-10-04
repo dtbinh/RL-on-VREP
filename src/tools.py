@@ -53,5 +53,6 @@ class LinearApproximator:
         difference = (reward+discount*maxNextQValue)-self.calculateQValue(state,action)
         print "  Difference: ",difference
         print "  f: ", self.f(state)
-        self.weights[action] = self.weights[action] - alpha*difference*self.f(state)
+        print "  old weights[",action,"]: ", self.weights[action]
+        self.weights[action] = self.weights[action] + alpha*difference*self.f(state)
 
