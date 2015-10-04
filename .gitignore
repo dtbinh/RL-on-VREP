@@ -1,4 +1,6 @@
 *.so
 *.pyc
 *.dll
+*.pkl
+data/*
 
