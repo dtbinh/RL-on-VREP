@@ -101,6 +101,8 @@ class MapStraight:
         
         self.state = self.initState
         
+        self.wininngRadius = 0.5
+        
     def start(self):
         returnCode = vrep.simxStartSimulation(self.clientID,vrep.simx_opmode_oneshot)
         if (returnCode>1):
@@ -133,7 +135,7 @@ class MapStraight:
         if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[01]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1]:
             return -50
         
-        elif abs(self.target[0]-self.state[0])+abs(self.target[1]-self.state[1])<0.1:
+        elif abs(self.target[0]-self.state[0])+abs(self.target[1]-self.state[1])<self.wininngRadius:
             return 50
             
         else:
@@ -142,7 +144,7 @@ class MapStraight:
 
     def applyAction(self, action):
         reward = self.calculateReward()
-        if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[01]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1] or (abs(self.target[0]-self.state[0])+abs(self.target[1]-self.state[1]))<0.1:
+        if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[01]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1] or (abs(self.target[0]-self.state[0])+abs(self.target[1]-self.state[1]))<self.wininngRadius:
             self.state = self.initState
             self.stop()
             time.sleep(0.1) #100ms delay between stopping and starting to avoid problems
