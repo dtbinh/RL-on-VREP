@@ -27,21 +27,45 @@ Created on Mon Sep 21 14:58:48 2015
 
 from qLearningAgent import ApproximateQLearningAgent
 from environment import MapStraight
+import time
 
 env = MapStraight()
-agent = ApproximateQLearningAgent(0.5,0.01,1,env.target)
+
+agent = ApproximateQLearningAgent(0.2,0.01,0.8,env.target)
 env.start()
 
-for k in range(50):
+
+print "target:", env.target
+for k in range(5000):
     print 10*'='," iteration: ",k,10*'='
     state = env.getState()
-    print "Current state: ", state
+    #print "Current state: ", state
     action=agent.selectAction(state)
-    print "Selected action: ", action
+    #print "Selected action: ", action
     newState,reward=env.applyAction(action)
-    print "New state: ",newState, "\tReward: ",reward
+    #print "New state: ",newState, "\tReward: ",reward
+    print "Reward: ",reward
     agent.update(state,action,newState,reward)
-    print 'Updated weights[',action,']: ', agent.QValues.weights[action]
+    #print 'Updated weights[',action,']: ', agent.QValues.weights[action]
+
+env.stop()
+
+print "Preparing optimal run..."
+agent.eps=0.001
+time.sleep(2)
+env.start()
+print "Running optimally"
+
+for k in range(500):
+    print 10*'='," iteration: ",k,10*'='
+    state = env.getState()
+    #print "Current state: ", state
+    action=agent.selectAction(state)
+    #print "Selected action: ", action
+    newState,reward=env.applyAction(action)
+    #print "New state: ",newState, "\tReward: ",reward
+    agent.update(state,action,newState,reward)
+    #print 'Updated weights[',action,']: ', agent.QValues.weights[action]
 
 env.stop()
     
