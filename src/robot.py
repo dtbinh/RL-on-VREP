@@ -39,15 +39,25 @@ class Robot:
     def applyAction(self,action):
         if action[0]!=0:
             self.desiredWheelRotSpeed=self.desiredWheelRotSpeed+action[0]*self.wheelRotSpeedDx
-                
+            if self.desiredWheelRotSpeed>10*self.wheelRotSpeedDx:
+                self.desiredWheelRotSpeed = 10*self.wheelRotSpeedDx
+            elif self.desiredWheelRotSpeed<-10*self.wheelRotSpeedDx:
+                self.desiredWheelRotSpeed = -10*self.wheelRotSpeedDx
+
             returnCode=vrep.simxSetJointTargetVelocity(self.clientID,self.ml,self.desiredWheelRotSpeed,vrep.simx_opmode_oneshot)
             returnCode=vrep.simxSetJointTargetVelocity(self.clientID,self.mr,self.desiredWheelRotSpeed,vrep.simx_opmode_oneshot)
             
         if action[1]!=0:
             self.desiredSteeringAngle=self.desiredSteeringAngle+action[1]*self.steeringAngleDx
+
+            if self.desiredSteeringAngle>10*self.steeringAngleDx:
+                self.desiredSteeringAngle = 10*self.steeringAngleDx
+            elif self.desiredSteeringAngle<-10*self.steeringAngleDx:
+                self.desiredSteeringAngle = -10*self.steeringAngleDx            
+            
             steeringAngleLeft=math.atan(self.l/(-self.d+self.l/math.tan(self.desiredSteeringAngle+0.00001)))
             steeringAngleRight=math.atan(self.l/(self.d+self.l/math.tan(self.desiredSteeringAngle+0.00001)))
-               
+                
             returnCode=vrep.simxSetJointTargetPosition(self.clientID,self.sl,steeringAngleLeft,vrep.simx_opmode_oneshot)
             returnCode=vrep.simxSetJointTargetPosition(self.clientID,self.sr,steeringAngleRight,vrep.simx_opmode_oneshot)
 
