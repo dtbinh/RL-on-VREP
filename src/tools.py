@@ -58,11 +58,11 @@ class LinearApproximator:
         self.weights[action] = self.weights[action] + alpha*difference*self.f(state)
         
     def saveWeights(self,filename="../data/weights.pkl"):
-        with open('weight.pkl', 'wb') as output:
+        with open(filename, 'wb') as output:
             pickle.dump(self.weights,output,pickle.HIGHEST_PROTOCOL)
             
     def loadWeights(self,filename="../data/weights.pkl"):
-        with open('weight.pkl', 'rb') as input:
+        with open(filename, 'rb') as input:
             self.weights = pickle.load(input)
         
         
