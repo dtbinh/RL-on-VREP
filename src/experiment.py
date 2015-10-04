@@ -29,7 +29,7 @@ from qLearningAgent import ApproximateQLearningAgent
 from environment import MapStraight
 import time
 
-env = MapStraight()
+env = MapStraight([[0,4],[-7,-3.5]])
 
 agent = ApproximateQLearningAgent(0.2,0.01,0.8,env.target)
 env.start()
@@ -37,14 +37,16 @@ env.start()
 
 print "target:", env.target
 for k in range(5000):
-    print 10*'='," iteration: ",k,10*'='
+    #print 10*'='," iteration: ",k,10*'='
     state = env.getState()
     #print "Current state: ", state
     action=agent.selectAction(state)
     #print "Selected action: ", action
     newState,reward=env.applyAction(action)
     #print "New state: ",newState, "\tReward: ",reward
-    print "Reward: ",reward
+    if abs(reward)>40:
+        print 10*'='," iteration: ",k,10*'='
+        print "Reward: ",reward
     agent.update(state,action,newState,reward)
     #print 'Updated weights[',action,']: ', agent.QValues.weights[action]
 

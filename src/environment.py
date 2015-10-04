@@ -147,11 +147,11 @@ class MapStraight:
     def applyAction(self, action):
         reward = self.calculateReward()
         if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[1]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1] or (abs(self.target[0]-self.state[0])+abs(self.target[1]-self.state[1]))<self.wininngRadius:
+            print "Terminal state: ", self.state, " - Reward: ", reward            
             self.state = self.initState
             self.stop()
             time.sleep(0.1) #100ms delay between stopping and starting to avoid problems
             self.start()
-            print "Terminal state!!"
             return None,reward
         self.robot.applyAction(action)
         returncode = vrep.simxSynchronousTrigger(self.clientID)
