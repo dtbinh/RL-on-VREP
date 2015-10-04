@@ -36,7 +36,7 @@ class LinearApproximator:
         
     def getBestActionMaxQValue(self, state):
         bestAction = None
-        maxQValue=-10000000
+        maxQValue=-float('Inf')
         for action in self.actionSet:
             qValue=self.calculateQValue(state, action)
             if maxQValue<qValue:
