@@ -26,8 +26,8 @@ class LinearApproximator:
     def f(self, state):
         
         f1 = abs(self.targetPos[0]-state[0])+abs(self.targetPos[1]-state[1])
-        f2 = abs(math.atan2(self.targetPos[1]-state[1],self.targetPos[0]-state[0]) - state[2])
-        f3 = state[3]
+        f2 = abs(math.atan2(self.targetPos[1]-state[1],self.targetPos[0]-state[0]) - (state[2]+state[5]))
+        f3 = state[4]*f2#state[3]
         
         return np.array([f1,f2,f3])
         
