@@ -71,10 +71,10 @@ class ApproximateQLearningAgent:
     def selectAction(self,state):  
         r=random.uniform(0,1)
         if r<self.eps:
-            print "-- Action selected randomly --"
+            #print "-- Action selected randomly --"
             return self.actions[random.randint(0,len(self.actions)-1)]
         else:
-            print "-- Action selected optimally --"
+            #print "-- Action selected optimally --"
             bestAction = self.getBestActionMaxQValue(state)[0]
             return bestAction
     

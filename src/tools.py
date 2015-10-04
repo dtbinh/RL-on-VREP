@@ -49,10 +49,10 @@ class LinearApproximator:
             maxNextQValue = 0
         else:
             _,maxNextQValue = self.getBestActionMaxQValue(newState)
-        print "  Update tuple: ",[state,action,newState,reward]
+        #print "  Update tuple: ",[state,action,newState,reward]
         difference = (reward+discount*maxNextQValue)-self.calculateQValue(state,action)
-        print "  Difference: ",difference
-        print "  f: ", self.f(state)
-        print "  old weights[",action,"]: ", self.weights[action]
+        #print "  Difference: ",difference
+        #print "  f: ", self.f(state)
+        #print "  old weights[",action,"]: ", self.weights[action]
         self.weights[action] = self.weights[action] + alpha*difference*self.f(state)
 
