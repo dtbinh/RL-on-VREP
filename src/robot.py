@@ -36,7 +36,7 @@ class Robot:
         self.desiredSteeringAngle=0
         self.desiredWheelRotSpeed=0        
 
-    def applyAction(self,action):
+    def applyActionIncremental(self,action):
         if action[0]!=0:
             self.desiredWheelRotSpeed=self.desiredWheelRotSpeed+action[0]*self.wheelRotSpeedDx
             if self.desiredWheelRotSpeed>10*self.wheelRotSpeedDx:
