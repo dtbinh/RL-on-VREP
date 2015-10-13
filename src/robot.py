@@ -22,6 +22,10 @@ class Robot:
         
         self.clientID=clientID
         
+        self.absSpeed={-1:-1,0:0,1:1}
+        self.absAngle={-1:-4*math.pi/180,0:0,1:4*math.pi/180}
+        
+        
         errorCodeML,ml = vrep.simxGetObjectHandle(clientID,'nakedCar_motorLeft',vrep.simx_opmode_oneshot_wait)
         errorCodeMR,mr = vrep.simxGetObjectHandle(clientID,'nakedCar_motorRight',vrep.simx_opmode_oneshot_wait)
         errorCodeSL,sl = vrep.simxGetObjectHandle(clientID,'nakedCar_steeringLeft',vrep.simx_opmode_oneshot_wait)
@@ -60,6 +64,19 @@ class Robot:
                 
             returnCode=vrep.simxSetJointTargetPosition(self.clientID,self.sl,steeringAngleLeft,vrep.simx_opmode_oneshot)
             returnCode=vrep.simxSetJointTargetPosition(self.clientID,self.sr,steeringAngleRight,vrep.simx_opmode_oneshot)
+    
+    def applyActionAbsolute(self,action):
+        self.desiredWheelRotSpeed=self.absSpeed[action[0]]
+        self.desiredSteeringAngle=self.absAngle[action[1]]
+        
+        returnCode=vrep.simxSetJointTargetVelocity(self.clientID,self.ml,self.desiredWheelRotSpeed,vrep.simx_opmode_oneshot)
+        returnCode=vrep.simxSetJointTargetVelocity(self.clientID,self.mr,self.desiredWheelRotSpeed,vrep.simx_opmode_oneshot)
+        
+        steeringAngleLeft=math.atan(self.l/(-self.d+self.l/math.tan(self.desiredSteeringAngle+0.00001)))
+        steeringAngleRight=math.atan(self.l/(self.d+self.l/math.tan(self.desiredSteeringAngle+0.00001)))
+                
+        returnCode=vrep.simxSetJointTargetPosition(self.clientID,self.sl,steeringAngleLeft,vrep.simx_opmode_oneshot)
+        returnCode=vrep.simxSetJointTargetPosition(self.clientID,self.sr,steeringAngleRight,vrep.simx_opmode_oneshot)
 
 """vrep.simxFinish(-1)
 clientID=vrep.simxStart('127.0.0.1',19999,True,True,5000,5)
