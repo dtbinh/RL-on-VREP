@@ -144,6 +144,18 @@ class MapStraight:
             
         else:
             return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+self.redPenalty*self.state[3]
+            
+    def calculateRewardPair(self,newState):
+        if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[01]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1]:
+            return -50
+        
+        elif abs(self.target[0]-self.state[0])+abs(self.target[1]-self.state[1])<self.wininngRadius:
+            return 50
+            
+        else:
+            dOld=abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1])
+            dNew=abs(newState[0]-self.target[0])+abs(newState[1]-self.target[1])
+            return dOld-dNew+self.redPenalty*newState[3]
     
 
 
