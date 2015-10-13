@@ -153,7 +153,7 @@ class MapStraight:
             time.sleep(0.1) #100ms delay between stopping and starting to avoid problems
             self.start()
             return None,reward
-        self.robot.applyActionIncremental(action)
+        self.robot.applyActionAbsolute(action)
         returncode = vrep.simxSynchronousTrigger(self.clientID)
         newState = self.getState()
         self.state = newState
