@@ -49,7 +49,7 @@ class SimpleEnvironment:
         self.state = self.initState
 
 class MapStraight:
-    def __init__(self, boundaries=[[-3, 7],[-7, 7]]):
+    def __init__(self, boundaries=[[-3, 7],[-7, 7]], verbose = False):
         vrep.simxFinish(-1)
         clientID=vrep.simxStart('127.0.0.1',19999,True,True,5000,2)
         if clientID==-1:
@@ -80,6 +80,8 @@ class MapStraight:
         
         if (returnCode!=0):
                 raise Exception('Could not get target position')
+                
+        self.verbose = verbose
                 
         self.car = car
         
@@ -147,7 +149,8 @@ class MapStraight:
     def applyAction(self, action):
         reward = self.calculateReward()
         if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[1]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1] or (abs(self.target[0]-self.state[0])+abs(self.target[1]-self.state[1]))<self.wininngRadius:
-            print "Terminal state: ", self.state, " - Reward: ", reward            
+            if self.verbose:            
+                print "Terminal state: ", self.state, " - Reward: ", reward          
             self.state = self.initState
             self.stop()
             time.sleep(0.1) #100ms delay between stopping and starting to avoid problems
@@ -156,6 +159,8 @@ class MapStraight:
         self.robot.applyActionAbsolute(action)
         returncode = vrep.simxSynchronousTrigger(self.clientID)
         newState = self.getState()
+        if self.verbose:
+            print "From state: ", self.state, " applied action: ", action, " got reward: ", reward
         self.state = newState
         return tuple(newState),reward
         
