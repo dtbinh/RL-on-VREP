@@ -135,7 +135,7 @@ class MapStraight:
         theta=math.atan2(positionFR[1]-positionBR[1],positionFR[0]-positionBR[0])
         return [position[0],position[1],theta,1*(self.redBoundaries[0]>position[0] or position[0]>self.redBoundaries[1]),self.robot.desiredWheelRotSpeed,self.robot.desiredSteeringAngle]
                 
-    def calculateReward(self):
+    def calculateRewardSingle(self):
         if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[01]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1]:
             return -50
         
@@ -144,10 +144,11 @@ class MapStraight:
             
         else:
             return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+self.redPenalty*self.state[3]
+    
 
 
     def applyAction(self, action):
-        reward = self.calculateReward()
+        reward = self.calculateRewardSingle()
         if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[1]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1] or (abs(self.target[0]-self.state[0])+abs(self.target[1]-self.state[1]))<self.wininngRadius:
             if self.verbose:            
                 print "Terminal state: ", self.state, " - Reward: ", reward          
