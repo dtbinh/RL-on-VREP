@@ -49,7 +49,7 @@ class SimpleEnvironment:
         self.state = self.initState
 
 class MapStraight:
-    def __init__(self, boundaries=[[-3, 7],[-7, 7]], redPenalty = 0, verbose = False):
+    def __init__(self, boundaries=[[-3, 7],[-7, 7]], redPenalty = 0, rewardStrategy = 'Differential', actionStrategy = 'Absolute',verbose = False):
         vrep.simxFinish(-1)
         clientID=vrep.simxStart('127.0.0.1',19999,True,True,5000,2)
         if clientID==-1:
@@ -105,6 +105,10 @@ class MapStraight:
         self.wininngRadius = 0.5
         
         self.redPenalty = redPenalty
+        
+        self.rewardStrategy = rewardStrategy        
+        
+        self.actionStrategy = actionStrategy
         
     def start(self):
         returnCode = vrep.simxStartSimulation(self.clientID,vrep.simx_opmode_oneshot)
@@ -168,10 +172,22 @@ class MapStraight:
             time.sleep(0.1) #100ms delay between stopping and starting to avoid problems
             self.start()
             return None,reward
-        self.robot.applyActionAbsolute(action)
+        if (self.actionStrategy == 'Absolute'):
+            self.robot.applyActionAbsolute(action)
+        elif (self.actionStrategy == 'Differential'):
+            self.robot.applyActionIncremental(action)
+        else:
+            print "Not valid action strategy"
+            return
         returncode = vrep.simxSynchronousTrigger(self.clientID)
         newState = self.getState()
-        reward = self.calculateRewardPair(newState)
+        if (self.rewardStrategy == 'Differential'):
+            reward = self.calculateRewardPair(newState)
+        elif (self.rewardStrategy == 'Absolute'):
+            reward = self.calculateRewardSingle()
+        else:
+            print "Not valid reward strategy"
+            return
         if self.verbose:
             print "From state: ", self.state, " applied action: ", action, " got reward: ", reward
         self.state = newState
