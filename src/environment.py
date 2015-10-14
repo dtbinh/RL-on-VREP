@@ -49,7 +49,7 @@ class SimpleEnvironment:
         self.state = self.initState
 
 class MapStraight:
-    def __init__(self, boundaries=[[-3, 7],[-7, 7]], verbose = False):
+    def __init__(self, boundaries=[[-3, 7],[-7, 7]], redPenalty = 0, verbose = False):
         vrep.simxFinish(-1)
         clientID=vrep.simxStart('127.0.0.1',19999,True,True,5000,2)
         if clientID==-1:
@@ -89,8 +89,7 @@ class MapStraight:
         self.br = br
         
         self.clientID = clientID
-        
-        self.redPenalty = -5
+
         self.boundaries = boundaries
         
         self.redBoundaries=[1.5,2.5]
@@ -105,7 +104,7 @@ class MapStraight:
         
         self.wininngRadius = 0.5
         
-        self.redPenalty = 0
+        self.redPenalty = redPenalty
         
     def start(self):
         returnCode = vrep.simxStartSimulation(self.clientID,vrep.simx_opmode_oneshot)
