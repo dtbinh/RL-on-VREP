@@ -49,7 +49,7 @@ class SimpleEnvironment:
         self.state = self.initState
 
 class MapStraight:
-    def __init__(self, boundaries=[[-3, 7],[-7, 7]], redPenalty = 0, rewardStrategy = 'Differential', actionStrategy = 'Absolute',verbose = False):
+    def __init__(self, initRobotPosition=[2.5, -6.5], boundaries=[[-3, 7],[-7, 7]], redPenalty = 0, rewardStrategy = 'Differential', actionStrategy = 'Absolute',verbose = False):
         vrep.simxFinish(-1)
         clientID=vrep.simxStart('127.0.0.1',19999,True,True,5000,2)
         if clientID==-1:
@@ -63,6 +63,8 @@ class MapStraight:
         
         if (errorCodeCar!=0):
                 raise Exception('Could not get car handle')
+                
+        returnCode=vrep.simxSetObjectPosition(clientID,car,-1,[initRobotPosition[0],initRobotPosition[1],0.1],vrep.simx_opmode_oneshot_wait)
         
         returnCode,position=vrep.simxGetObjectPosition(clientID,car,-1,vrep.simx_opmode_oneshot_wait)
         
