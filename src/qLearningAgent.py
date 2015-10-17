@@ -56,8 +56,14 @@ class QLearningAgent:
 
 class ApproximateQLearningAgent:
     
-    def __init__(self,eps,alpha,discount,targetPos):
-        self.actions=((-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1))
+    def __init__(self,eps,alpha,discount,targetPos,actionStrategy = 'Absolute'):
+        if (actionStrategy == 'Absolute'):
+            self.actions=((-1,-1),(-1,0),(-1,1),(1,-1),(1,0),(1,1))
+        elif (actionStrategy == 'Differential'):
+            self.actions=((-1,-1),(-1,0),(-1,1),(0,-1),(0,0),(0,1),(1,-1),(1,0),(1,1))
+        else:
+            print "Not valid action strategy"
+            return
         self.QValues = LinearApproximator(self.actions,targetPos)
         self.eps=eps
         self.alpha=alpha
