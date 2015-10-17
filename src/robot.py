@@ -22,8 +22,8 @@ class Robot:
         
         self.clientID=clientID
         
-        self.absSpeed={-1:-1,0:0,1:1}
-        self.absAngle={-1:-4*math.pi/180,0:0,1:4*math.pi/180}
+        self.absSpeed={-1:-3,0:0,1:3}
+        self.absAngle={-1:-8*math.pi/180,0:0,1:8*math.pi/180}
         
         
         errorCodeML,ml = vrep.simxGetObjectHandle(clientID,'nakedCar_motorLeft',vrep.simx_opmode_oneshot_wait)
