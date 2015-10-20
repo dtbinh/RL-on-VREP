@@ -12,4 +12,7 @@ def normalizeAngleDegrees(angle):
     else:
         div = math.ceil(angle/180.0)
     
+    if div<0.0001:
+        return angle
+    
     return angle - div/abs(div)*(int(abs(div)+1)/2)*360.0
