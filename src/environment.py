@@ -100,7 +100,8 @@ class MapStraight:
         
         self.target = [targetPosition[0],targetPosition[1]]
         
-        self.initState = [position[0],position[1],theta,1*(self.redBoundaries[0]>position[0] or position[0]>self.redBoundaries[1]),0,0]
+        #self.initState = [position[0],position[1],theta,1*(self.redBoundaries[0]>position[0] or position[0]>self.redBoundaries[1]),0,0]
+        self.initState = [position[0],position[1],theta]
         
         self.state = self.initState
         
@@ -138,7 +139,8 @@ class MapStraight:
         returnCode,positionBR=vrep.simxGetObjectPosition(self.clientID,self.br,-1,vrep.simx_opmode_oneshot_wait)
         
         theta=math.atan2(positionFR[1]-positionBR[1],positionFR[0]-positionBR[0])
-        return [position[0],position[1],theta,1*(self.redBoundaries[0]>position[0] or position[0]>self.redBoundaries[1]),self.robot.desiredWheelRotSpeed,self.robot.desiredSteeringAngle]
+        #return [position[0],position[1],theta,1*(self.redBoundaries[0]>position[0] or position[0]>self.redBoundaries[1]),self.robot.desiredWheelRotSpeed,self.robot.desiredSteeringAngle]
+        return [position[0],position[1],theta]
                 
     def calculateRewardSingle(self):
         if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[01]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1]:
@@ -148,7 +150,7 @@ class MapStraight:
             return 50
             
         else:
-            return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))+self.redPenalty*self.state[3]
+            return -(abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1]))#+self.redPenalty*self.state[3]
             
     def calculateRewardPair(self,newState):
         if self.state[0]<self.boundaries[0][0] or self.state[0]>self.boundaries[0][1] or self.state[01]<self.boundaries[1][0] or self.state[1]>self.boundaries[1][1]:
@@ -160,7 +162,7 @@ class MapStraight:
         else:
             dOld=abs(self.state[0]-self.target[0])+abs(self.state[1]-self.target[1])
             dNew=abs(newState[0]-self.target[0])+abs(newState[1]-self.target[1])
-            return dOld-dNew+self.redPenalty*newState[3]
+            return dOld-dNew#+self.redPenalty*newState[3]
     
 
 
