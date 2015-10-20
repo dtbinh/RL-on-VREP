@@ -1,4 +1,5 @@
 import math
+from mathTools import normalizeAngleDegrees
 import numpy as np
 import cPickle as pickle
 
@@ -25,9 +26,26 @@ class LinearApproximator:
     
     def f(self, state):
         
-        f1 = abs(self.targetPos[0]-state[0])+abs(self.targetPos[1]-state[1])
-        f2 = abs(math.atan2(self.targetPos[1]-state[1],self.targetPos[0]-state[0]) - (state[2]+state[5]))
-        f3 = state[4]*f2#state[3]
+        #f1 = abs(self.targetPos[0]-state[0])+abs(self.targetPos[1]-state[1])
+        #f2 = abs(math.atan2(self.targetPos[1]-state[1],self.targetPos[0]-state[0]) - (state[2]+state[5]))
+        #f2 = abs(math.atan2(self.targetPos[1]-state[1],self.targetPos[0]-state[0]) - state[2])
+        #f3 = state[2]*f2#state[3]
+        
+        omega= abs(math.atan2(self.targetPos[1]-state[1],self.targetPos[0]-state[0]))
+        theta = state[2]
+        differenceRad = omega - theta + math.pi
+        differenceDeg = differenceRad*180/math.pi
+        differenceDegNorm = normalizeAngleDegrees(differenceDeg)
+        
+        f1 = 1 if (differenceDegNorm>=0.0 and differenceDegNorm<=180.0) else -1
+        f2 = 1 if (differenceDegNorm>=-90.0 and differenceDegNorm<=90.0) else -1
+        
+        f3 = 0;
+        
+        if abs(differenceDegNorm)<=10.0:
+            f3 = 1
+        elif abs(differenceDegNorm)>=170.0:
+            f3 = -1
         
         return np.array([f1,f2,f3])
         
@@ -64,6 +82,3 @@ class LinearApproximator:
     def loadWeights(self,filename="../data/weights.pkl"):
         with open(filename, 'rb') as input:
             self.weights = pickle.load(input)
-        
-        
-
